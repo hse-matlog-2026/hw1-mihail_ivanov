@@ -286,16 +286,20 @@ class Formula:
         Returns:
             A formula whose polish notation representation is the given string.
         """
+
         # Optional Task 1.8
         def _parse_polish_prefix(s: str) -> Tuple[Formula, str]:
             if not s:
                 return None, "Empty string"
+
             first_char = s[0]
             if is_variable(first_char) or is_constant(first_char):
                 return Formula(first_char), s[1:]
+
             if is_unary(first_char):
                 operand, suffix = _parse_polish_prefix(s[1:])
                 return Formula(first_char, operand), suffix
+
             if is_binary(first_char):
                 first_op, suffix = _parse_polish_prefix(s[1:])
                 second_op, suffix = _parse_polish_prefix(suffix)
@@ -310,6 +314,7 @@ class Formula:
                 rest = s[1:]
             else:
                 raise ValueError("Unknown symbol in polish notation: " + s)
+
             if is_unary(op):
                 operand, suffix = _parse_polish_prefix(rest)
                 return Formula(op, operand), suffix
