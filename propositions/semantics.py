@@ -64,6 +64,23 @@ def evaluate(formula: Formula, model: Model) -> bool:
     assert is_model(model)
     assert formula.variables().issubset(variables(model))
     # Task 2.1
+    if is_constant(formula.root):
+        return formula.root == 'T'
+    elif is_variable(formula.root):
+        return model[formula.root]
+    elif is_unary(formula.root):
+        return not evaluate(formula.first, model)
+    else:
+        val1 = evaluate(formula.first, model)
+        val2 = evaluate(formula.second, model)
+        if formula.root == '&':
+            return val1 and val2
+        elif formula.root == '|':
+            return val1 or val2
+        elif formula.root == '->':
+            return (not val1) or val2
+        else:
+            raise ValueError(f"Unknown operator: {formula.root}")
 
 def all_models(variables: Sequence[str]) -> Iterable[Model]:
     """Calculates all possible models over the given variable names.
