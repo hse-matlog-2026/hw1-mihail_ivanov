@@ -291,19 +291,13 @@ class Formula:
         def _parse_polish_prefix(s: str) -> Tuple[Formula, str]:
             if not s:
                 return None, "Empty string"
-
-            first_char = s[0]
-            if is_variable(first_char) or is_constant(first_char):
-                return Formula(first_char), s[1:]
-
-            if is_unary(first_char):
-                operand, suffix = _parse_polish_prefix(s[1:])
-                return Formula(first_char, operand), suffix
-
-            if is_binary(first_char):
-                first_op, suffix = _parse_polish_prefix(s[1:])
-                second_op, suffix = _parse_polish_prefix(suffix)
-                return Formula(first_char, first_op, second_op), suffix
+            if 'p' <= s[0] <= 'z':
+                i = 1
+                while i < len(s) and s[i].isdigit():
+                    i += 1
+                return Formula(s[:i]), s[i:]
+            if is_constant(s[0]):
+                return Formula(s[0]), s[1:]
             op = ''
             rest = s
             if len(s) >= 2 and (is_binary(s[:2]) or is_unary(s[:2])):
@@ -314,7 +308,6 @@ class Formula:
                 rest = s[1:]
             else:
                 raise ValueError("Unknown symbol in polish notation: " + s)
-
             if is_unary(op):
                 operand, suffix = _parse_polish_prefix(rest)
                 return Formula(op, operand), suffix
