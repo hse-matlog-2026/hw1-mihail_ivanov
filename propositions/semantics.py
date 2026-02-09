@@ -55,10 +55,10 @@ def evaluate(formula: Formula, model: Model) -> bool:
         The truth value of the given formula in the given model.
 
     Examples:
-        >>> evaluate(Formula.parse('~(p&q76)'), {'p': True, 'q76': False})
+        evaluate(Formula.parse('~(p&q76)'), {'p': True, 'q76': False})
         True
 
-        >>> evaluate(Formula.parse('~(p&q76)'), {'p': True, 'q76': True})
+        evaluate(Formula.parse('~(p&q76)'), {'p': True, 'q76': True})
         False
     """
     assert is_model(model)
