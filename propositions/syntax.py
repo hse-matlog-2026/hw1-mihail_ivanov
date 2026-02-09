@@ -152,6 +152,14 @@ class Formula:
             A set of all variable names used in the current formula.
         """
         # Task 1.2
+        if is_variable(self.root):
+            return {self.root}
+        elif is_constant(self.root):
+            return set()
+        elif is_unary(self.root):
+            return self.first.variables()
+        else:
+            return self.first.variables().union(self.second.variables())
 
     @memoized_parameterless_method
     def operators(self) -> Set[str]:
