@@ -244,6 +244,8 @@ class Formula:
             representation of a formula, ``False`` otherwise.
         """
         # Task 1.5
+        formula, suffix = Formula._parse_prefix(string)
+        return formula is not None and suffix == ''
         
     @staticmethod
     def parse(string: str) -> Formula:
@@ -257,6 +259,8 @@ class Formula:
         """
         assert Formula.is_formula(string)
         # Task 1.6
+        formula, _ = Formula._parse_prefix(string)
+        return formula
 
     def polish(self) -> str:
         """Computes the polish notation representation of the current formula.
@@ -265,6 +269,12 @@ class Formula:
             The polish notation representation of the current formula.
         """
         # Optional Task 1.7
+        if is_variable(self.root) or is_constant(self.root):
+            return self.root
+        elif is_unary(self.root):
+            return self.root + self.first.polish()
+        else:
+            return self.root + self.first.polish() + self.second.polish()
 
     @staticmethod
     def parse_polish(string: str) -> Formula:
