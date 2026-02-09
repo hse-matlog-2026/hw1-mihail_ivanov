@@ -197,6 +197,40 @@ class Formula:
             is a string with some human-readable content.
         """
         # Task 1.4
+        if not string:
+            return None, "Empty string"
+        if 'p' <= string[0] <= 'z':
+            i = 1
+            while i < len(string) and string[i].isdigit():
+                i += 1
+            return Formula(string[:i]), string[i:]
+        if is_constant(string[0]):
+            return Formula(string[0]), string[1:]
+        if is_unary(string[0]):
+            sub_formula, suffix = Formula._parse_prefix(string[1:])
+            if sub_formula is None:
+                return None, "Invalid formula after unary operator: " + suffix
+            return Formula(string[0], sub_formula), suffix
+        if string[0] == '(':
+            first, suffix = Formula._parse_prefix(string[1:])
+            if first is None:
+                return None, "Invalid first operand inside parentheses: " + suffix
+            if len(suffix) >= 2 and is_binary(suffix[:2]):
+                operator = suffix[:2]
+                suffix = suffix[2:]
+            elif len(suffix) >= 1 and is_binary(suffix[:1]):
+                operator = suffix[:1]
+                suffix = suffix[1:]
+            else:
+                return None, "Missing binary operator after first operand"
+            second, suffix = Formula._parse_prefix(suffix)
+            if second is None:
+                return None, "Invalid second operand inside parentheses: " + suffix
+            if not suffix or suffix[0] != ')':
+                return None, "Missing closing parenthesis"
+
+            return Formula(operator, first, second), suffix[1:]
+        return None, "Unexpected symbol"
 
     @staticmethod
     def is_formula(string: str) -> bool:
